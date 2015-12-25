@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "kazukisaima.kithub"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    // DI
+    compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
+
+    // Rx
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-design:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
+    compile 'com.trello:rxlifecycle:0.4.0'
+    compile 'com.trello:rxlifecycle-components:0.4.0'
+
+    // Networking
+    compile 'com.squareup.moshi:moshi:1.0.0'
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
+    compile "com.squareup.retrofit:converter-moshi:2.0.0-beta2"
+    compile 'com.squareup.okhttp:okhttp:2.7.0'
+
+    // DataStore
+    compile 'io.realm:realm-android:0.87.0'
+
+    // Image Loading
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // Utility
+    compile 'joda-time:joda-time:2.9.1'
+
+    // UI
+    compile 'org.jetbrains.anko:anko-sdk15:0.8'
+    compile 'org.jetbrains.anko:anko-support-v4:0.8'
+    compile 'org.jetbrains.anko:anko-appcompat-v7:0.8'
+
+    compile 'com.github.castorflex.smoothprogressbar:library-circular:1.2.0'
+
+    // debug
+    compile 'com.jakewharton.timber:timber:4.1.0'
+    debugCompile 'com.facebook.stetho:stetho:1.2.0'
+    debugCompile 'com.facebook.stetho:stetho-okhttp:1.2.0'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+}

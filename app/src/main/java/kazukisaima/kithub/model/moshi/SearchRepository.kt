@@ -31,7 +31,7 @@ data class RepositoryData(
 )
 
 data class UserData(
-    @Json(name = "login") val userName: String,
+    @Json(name = "login") val name: String,
     val id: Int,
     @Json(name = "avatar_url") val avatarURLString: String,
     @Json(name = "url") val urlString: String

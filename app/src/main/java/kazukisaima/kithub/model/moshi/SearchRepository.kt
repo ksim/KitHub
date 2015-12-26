@@ -27,7 +27,7 @@ data class RepositoryData(
     @Json(name = "updated_at") val updateDate: Date,
     @Json(name = "stargazers_count") val stargazersCount: Int,
     @Json(name = "watchers_count") val watchersCount: Int,
-    val score: Int
+    val score: Double
 )
 
 data class UserData(

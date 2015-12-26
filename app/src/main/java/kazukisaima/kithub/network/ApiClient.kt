@@ -1,6 +1,8 @@
 package kazukisaima.kithub.network
 
+import com.squareup.moshi.Moshi
 import com.squareup.okhttp.OkHttpClient
+import kazukisaima.kithub.model.moshi.DateAdapter
 import retrofit.MoshiConverterFactory
 import retrofit.Retrofit
 import retrofit.RxJavaCallAdapterFactory
@@ -17,10 +19,13 @@ public class ApiClient {
     }
 
     public fun getGitHubApiService(): GitHubApiService {
+        val moshi = Moshi.Builder()
+                .add(DateAdapter.FACTORY)
+                .build()
         return  Retrofit.Builder()
             .client(OkHttpClient())
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl(BASE_URL)
             .build()
             .create(GitHubApiService::class.java)

@@ -6,6 +6,12 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import kazukisaima.kithub.R
+import kazukisaima.kithub.model.moshi.SearchRepositoryResponse
+import kazukisaima.kithub.network.ApiHelper
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,6 +20,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        ApiHelper().searchRepository("jquery")
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(object: Subscriber<SearchRepositoryResponse>(){
+                override fun onNext(r: SearchRepositoryResponse?) {
+                    Timber.d(r.toString())
+                }
+
+                override fun onError(e: Throwable?) {
+                    Timber.e(e.toString())
+                }
+
+                override fun onCompleted() {
+                }
+            })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -32,6 +32,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
@@ -56,7 +57,10 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.7.0'
 
     // DataStore
-    compile 'io.realm:realm-android:0.87.0'
+    compile "io.realm:realm-android-library:${realm_version}@aar"
+    compile "io.realm:realm-annotations:${realm_version}"
+    kapt "io.realm:realm-annotations:${realm_version}"
+    kapt "io.realm:realm-annotations-processor:${realm_version}"
 
     // Image Loading
     compile 'com.squareup.picasso:picasso:2.5.2'

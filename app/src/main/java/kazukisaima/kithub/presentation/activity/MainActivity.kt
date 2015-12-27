@@ -6,15 +6,19 @@ import android.support.v7.widget.ListViewCompat
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import butterknife.bindView
+import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmChangeListener
+import io.realm.RealmResults
 import kazukisaima.kithub.R
 import kazukisaima.kithub.model.realm.Repository
 import kazukisaima.kithub.model.realm.User
 import kazukisaima.kithub.network.ApiClient
 import kazukisaima.kithub.network.ApiHelper
 import kazukisaima.kithub.network.GitHubApiService
+import kazukisaima.kithub.presentation.adapter.RepositoryAdapter
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -29,8 +33,12 @@ class MainActivity : AppCompatActivity() {
     val toolbar: Toolbar by bindView(R.id.toolbar)
     val listView: ListViewCompat by bindView(R.id.listView)
 
+    private var adapter: RepositoryAdapter by Delegates.notNull()
+
     private var realm: Realm by Delegates.notNull()
     private var realmChangeListener: RealmChangeListener by Delegates.notNull()
+    private var data: RealmResults<Repository> by Delegates.notNull()
+
     private val api: GitHubApiService = ApiClient().getGitHubApiService()
 
     private var subscription: Subscription by Delegates.notNull()
@@ -41,9 +49,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         realm = Realm.getInstance(this)
         realmChangeListener = RealmChangeListener {
-            Timber.d("data changed")
+            Timber.d(data.toString())
         }
         realm.addChangeListener(realmChangeListener)
+        data = realm.where(Repository::class.java).contains("name", "jquery", Case.INSENSITIVE).findAll()
+        adapter = RepositoryAdapter(this, data)
+        listView.adapter = adapter
     }
 
     override fun onStart() {

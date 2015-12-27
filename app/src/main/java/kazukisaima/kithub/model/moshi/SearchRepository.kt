@@ -21,7 +21,7 @@ data class RepositoryData(
     val owner: UserData,
     val private: Boolean,
     @Json(name = "html_url") val htmlURLString: String,
-    val description: String,
+    val description: String?,
     @Json(name = "url") val urlString: String,
     @Json(name = "created_at") val createDate: Date,
     @Json(name = "updated_at") val updateDate: Date,

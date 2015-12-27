@@ -15,7 +15,7 @@ public open class Repository(
     public open var fullName: String = "",
     public open var owner: User? = null,
     public open var private: Boolean = false,
-    public open var description: String = "",
+    public open var description: String? = null,
     public open var urlString: String = "",
     public open var createDate: Date = Date(),
     public open var updateDate: Date = Date(),

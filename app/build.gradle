@@ -46,6 +46,7 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-design-kotlin:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:0.3.0'
+    compile 'com.ogaclejapan:rxbinding:1.2.0'
     compile 'com.trello:rxlifecycle:0.4.0'
     compile 'com.trello:rxlifecycle-components:0.4.0'
 

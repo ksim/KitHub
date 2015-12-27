@@ -18,7 +18,7 @@ import org.jetbrains.anko.find
 
 class RepositoryAdapter(
     val context: Context,
-    val data: RealmResults<Repository>
+    var data: RealmResults<Repository>
 ): BaseAdapter() {
 
     val layoutInflater = LayoutInflater.from(context)
@@ -38,10 +38,10 @@ class RepositoryAdapter(
     }
 
     override fun getItem(p: Int): Repository {
-        return data.get(p)
+        return data[p]
     }
 
     override fun getItemId(p: Int): Long {
-        return data.get(p).id.toLong()
+        return data[p].id.toLong()
     }
 }

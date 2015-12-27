@@ -15,6 +15,7 @@ import kazukisaima.kithub.model.realm.Repository
 import kazukisaima.kithub.model.realm.User
 import kazukisaima.kithub.network.ApiHelper
 import kazukisaima.kithub.presentation.adapter.RepositoryAdapter
+import org.jetbrains.anko.onItemClick
 import rx.Observable
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
@@ -29,7 +30,9 @@ class MainActivity : AppCompatActivity() {
 
     private var adapter: RepositoryAdapter by Delegates.notNull()
 
-    private var realm: Realm by Delegates.notNull()
+    private val realm: Realm by lazy {
+        Realm.getInstance(this)
+    }
     private var realmChangeListener: RealmChangeListener by Delegates.notNull()
     private var data: RealmResults<Repository> by Delegates.notNull()
 
@@ -41,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        realm = Realm.getInstance(this)
+
         realmChangeListener = RealmChangeListener {
             adapter.data = realm.where(Repository::class.java).contains("name", searchView.query.toString(), Case.INSENSITIVE).findAllSorted("stargazersCount", Sort.DESCENDING)
             adapter.notifyDataSetChanged()
@@ -51,18 +54,26 @@ class MainActivity : AppCompatActivity() {
         adapter = RepositoryAdapter(this, data)
         listView.adapter = adapter
 
+        listView.onItemClick { adapterView, view, i, l ->
+            if (adapterView != null) {
+                val adapter = adapterView.adapter as RepositoryAdapter
+                val item = adapter.getItem(i)
+                RepositoryActivity.start(this, item.id)
+            }
+        }
     }
 
-    override fun onStop() {
-        super.onStop()
-        subscription.unsubscribe()
+    override fun onStart() {
+        super.onStart()
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        subscription.unsubscribe()
         realm.removeChangeListener(realmChangeListener)
         realm.close()
-    }
+   }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)

@@ -31,8 +31,11 @@ class RepositoryAdapter(
         val item = getItem(p)
         val view = convertView ?: layoutInflater.inflate(R.layout.list_repository, parent, false)
 
-        val textView: TextView = view.find(R.id.textView)
-        textView.text = item.name
+        val nameTextView: TextView = view.find(R.id.nameTextView)
+        val starTextView: TextView = view.find(R.id.starTextView)
+
+        nameTextView.text = item.name
+        starTextView.text = "star:${item.stargazersCount}"
 
         return view
     }

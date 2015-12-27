@@ -47,8 +47,6 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-design-kotlin:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:0.3.0'
     compile 'com.ogaclejapan:rxbinding:1.2.0'
-    compile 'com.trello:rxlifecycle:0.4.0'
-    compile 'com.trello:rxlifecycle-components:0.4.0'
 
     // Networking
     compile 'com.squareup.moshi:moshi:1.0.0'
@@ -63,9 +61,6 @@ dependencies {
     kapt "io.realm:realm-annotations:${realm_version}"
     kapt "io.realm:realm-annotations-processor:${realm_version}"
 
-    // Image Loading
-    compile 'com.squareup.picasso:picasso:2.5.2'
-
     // Utility
     compile 'joda-time:joda-time:2.9.1'
 
@@ -74,7 +69,6 @@ dependencies {
     compile 'org.jetbrains.anko:anko-support-v4:0.8'
     compile 'org.jetbrains.anko:anko-appcompat-v7:0.8'
 
-    compile 'com.github.castorflex.smoothprogressbar:library-circular:1.2.0'
 
     // debug
     compile 'com.jakewharton.timber:timber:4.1.0'

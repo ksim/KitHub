@@ -2,7 +2,7 @@
 <manifest package="kazukisaima.kithub"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".KitHub"
@@ -20,6 +20,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.activity.RepositoryActivity"
+            android:label="@string/title_activity_repository_acticity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

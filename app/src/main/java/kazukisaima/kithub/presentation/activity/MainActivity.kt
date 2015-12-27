@@ -3,11 +3,13 @@ package kazukisaima.kithub.presentation.activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.ListViewCompat
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import butterknife.bindView
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmChangeListener
@@ -20,12 +22,10 @@ import kazukisaima.kithub.network.ApiHelper
 import kazukisaima.kithub.network.GitHubApiService
 import kazukisaima.kithub.presentation.adapter.RepositoryAdapter
 import rx.Observable
-import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
-import rx.schedulers.Schedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private var realmChangeListener: RealmChangeListener by Delegates.notNull()
     private var data: RealmResults<Repository> by Delegates.notNull()
 
-    private val api: GitHubApiService = ApiClient().getGitHubApiService()
+    private val api = ApiHelper()
 
     private var subscription: Subscription by Delegates.notNull()
 
@@ -49,38 +49,13 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         realm = Realm.getInstance(this)
         realmChangeListener = RealmChangeListener {
-            Timber.d(data.toString())
+            adapter.notifyDataSetChanged()
         }
         realm.addChangeListener(realmChangeListener)
         data = realm.where(Repository::class.java).contains("name", "jquery", Case.INSENSITIVE).findAll()
         adapter = RepositoryAdapter(this, data)
         listView.adapter = adapter
-    }
 
-    override fun onStart() {
-        super.onStart()
-        subscription = api.searchRepositories("jquery")
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.newThread())
-            .flatMap { Observable.from(it.items) }
-            .map {
-                realm.beginTransaction()
-                val user = it.owner.run {
-                    User(id, name, avatarURLString, urlString)
-                }
-                realm.copyToRealmOrUpdate(user)
-
-                val repo = it.run {
-                    Repository(
-                        id, name, fullName, user, private, description, urlString,
-                        createDate, updateDate, stargazersCount, watchersCount, score
-                    )
-                }
-                realm.copyToRealmOrUpdate(repo)
-                realm.commitTransaction()
-                repo
-            }
-            .subscribe()
     }
 
     override fun onStop() {
@@ -96,6 +71,38 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        if (menu != null) {
+            val item = menu.findItem(R.id.menu_search)
+            val searchView = item.actionView as SearchView
+            subscription = RxSearchView.queryTextChanges(searchView)
+                .filter { !TextUtils.isEmpty(it) }
+                .throttleLast(1000, TimeUnit.MILLISECONDS)
+                .onBackpressureLatest()
+                .concatMap { api.searchRepository(it.toString()) }
+                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.newThread())
+                .flatMap { Observable.from(it.items) }
+                .map {
+                    realm.beginTransaction()
+                    val user = it.owner.run {
+                        User(id, name, avatarURLString, urlString)
+                    }
+                    realm.copyToRealmOrUpdate(user)
+
+                    val repo = it.run {
+                        Repository(
+                            id, name, fullName, user, private, description, urlString,
+                            createDate, updateDate, stargazersCount, watchersCount, score
+                        )
+                    }
+                    realm.copyToRealmOrUpdate(repo)
+                    realm.commitTransaction()
+                    repo
+                }
+                .subscribe()
+        }
+
         return true
     }
 

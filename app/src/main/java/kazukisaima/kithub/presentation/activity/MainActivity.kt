@@ -9,10 +9,7 @@ import android.text.TextUtils
 import android.view.Menu
 import butterknife.bindView
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView
-import io.realm.Case
-import io.realm.Realm
-import io.realm.RealmChangeListener
-import io.realm.RealmResults
+import io.realm.*
 import kazukisaima.kithub.R
 import kazukisaima.kithub.model.realm.Repository
 import kazukisaima.kithub.model.realm.User
@@ -46,11 +43,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         realm = Realm.getInstance(this)
         realmChangeListener = RealmChangeListener {
-            adapter.data = realm.where(Repository::class.java).contains("name", searchView.query.toString(), Case.INSENSITIVE).findAll()
+            adapter.data = realm.where(Repository::class.java).contains("name", searchView.query.toString(), Case.INSENSITIVE).findAllSorted("stargazersCount", Sort.DESCENDING)
             adapter.notifyDataSetChanged()
         }
         realm.addChangeListener(realmChangeListener)
-        data = realm.where(Repository::class.java).contains("name", "jquery", Case.INSENSITIVE).findAll()
+        data = realm.allObjectsSorted(Repository::class.java, "stargazersCount", Sort.DESCENDING)
         adapter = RepositoryAdapter(this, data)
         listView.adapter = adapter
 
@@ -80,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 .concatMap { api.searchRepository(it.toString()) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap { Observable.from(it.items) }
-                .map {
+                .subscribe {
                     realm.beginTransaction()
                     val user = it.owner.run {
                         User(id, name, avatarURLString, urlString)
@@ -95,9 +92,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     realm.copyToRealmOrUpdate(repo)
                     realm.commitTransaction()
-                    repo
                 }
-                .subscribe()
         }
 
         return true

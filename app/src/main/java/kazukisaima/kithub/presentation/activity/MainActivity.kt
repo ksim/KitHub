@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         realmChangeListener = RealmChangeListener {
             Timber.d("data changed")
         }
+        realm.addChangeListener(realmChangeListener)
     }
 
     override fun onStart() {
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        realm.removeChangeListener(realmChangeListener)
         realm.close()
     }
 
